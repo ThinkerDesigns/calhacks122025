@@ -1,2 +1,1 @@
-# calhacks122025
-Dhurv, Alan, Josh
+## THIS IS A README

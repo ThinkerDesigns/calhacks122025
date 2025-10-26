@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WATCHDOG</title>
+  <style>
+    /* General styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1d1f20; /* Updated background */
+      color: #e0e0e0;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+      color: #80e0ff;
+      margin: 20px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px #80e0ff, 0 0 20px #80e0ff;
+    }
+
+    video, img {
+      width: 50%;
+      border-radius: 15px;
+      margin-top: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+      border: 2px solid #333;
+      transition: transform 0.3s ease;
+    }
+
+    video:hover, img:hover {
+      transform: scale(1.05);
+    }
+
+    #statusBox {
+      margin-top: 20px;
+      font-size: 1.6em;
+      color: #9e9e9e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      transition: color 0.3s ease;
+    }
+
+    /* Glowing button effect */
+    .button {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      background: rgb(145, 92, 182);
+      padding: 15px 40px;
+      border-radius: 50px; /* Rounded buttons */
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .button:hover {
+      color: rgba(255, 255, 255, 1);
+      box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+      transform: translateY(-5px);
+    }
+
+    .button:active {
+      transform: translateY(2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      video, img {
+        width: 85%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      #statusBox {
+        font-size: 1.2em;
+      }
+
+      .button {
+        padding: 10px 20px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>WATCHDOG</h1>
+  <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+  <div id="statusBox">Loading status...</div>
+  <div>
+    <button class="button" id="armBtn">Arm System</button>
+    <button class="button" id="disarmBtn">Disarm System</button>
+  </div>
+
+  <script>
+    async function updateStatus() {
+      const res = await fetch('/status');
+      const data = await res.json();
+      document.getElementById('statusBox').textContent = data.status;
+    }
+
+    setInterval(updateStatus, 500);
+
+    document.getElementById('armBtn').addEventListener('click', async () => {
+      await fetch('/arm', { method: 'POST' });
+      updateStatus();
+    });
+
+    document.getElementById('disarmBtn').addEventListener('click', async () => {
+      await fetch('/disarm', { method: 'POST' });
+      updateStatus();
+    });
+  </script>
+</body>
+</html>
